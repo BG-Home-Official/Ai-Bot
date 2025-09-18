@@ -4,7 +4,7 @@ import { GoogleGenAI } from "@google/genai";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const GEMINI_API_KEY = "AIzaSyAJ1lowKyxaRDqLi5aa15KadVH095-mACw"; // Set this in Render
+const GEMINI_API_KEY = "AIzaSyAJ1lowKyxaRDqLi5aa15KadVH095-mACw";
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 app.use(express.json());
@@ -47,4 +47,4 @@ app.get("/", (req, res) => {
   res.json({ message: "Google GenAI API running 🚀" });
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
