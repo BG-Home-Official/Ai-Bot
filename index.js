@@ -4,11 +4,12 @@ import { GoogleGenAI } from "@google/genai";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const GEMINI_API_KEY = "AIzaSyAJ1lowKyxaRDqLi5aa15KadVH095-mACw";
+const GEMINI_API_KEY = "AIzaSyAJ1lowKyxaRDqLi5aa15KadVH095-mACw"; // Set this in Render
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 app.use(express.json());
 
+// Chat endpoint with history from POST
 app.post("/chat", async (req, res) => {
   try {
     const { history, message } = req.body;
@@ -20,10 +21,10 @@ app.post("/chat", async (req, res) => {
     // Start history if empty
     const chatHistory = history || [];
 
-    // Add new user message
+    // Add user message
     chatHistory.push({ role: "user", parts: [{ text: message }] });
 
-    // Send full history to Gemini
+    // Call Gemini with full history
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash-001",
       contents: chatHistory,
@@ -31,7 +32,7 @@ app.post("/chat", async (req, res) => {
 
     const reply = response.text;
 
-    // Add AI reply to history
+    // Add AI response
     chatHistory.push({ role: "model", parts: [{ text: reply }] });
 
     res.json({ reply, history: chatHistory });
@@ -41,4 +42,9 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Chat API running on port ${PORT}`));
+// Simple GET route
+app.get("/", (req, res) => {
+  res.json({ message: "Google GenAI API running 🚀" });
+});
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
