@@ -4,7 +4,7 @@ import { GoogleGenAI } from "@google/genai";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const ai = new GoogleGenAI({ apiKey: AIzaSyAJ1lowKyxaRDqLi5aa15KadVH095-mACw });
+const ai = new GoogleGenAI({ apiKey: "AIzaSyAJ1lowKyxaRDqLi5aa15KadVH095-mACw" });
 
 app.use(express.json());
 
