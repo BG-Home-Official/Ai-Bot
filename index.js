@@ -9,44 +9,36 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 app.use(express.json());
 
-// Memory in server (resets when restarted)
-let chatHistory = [];
-
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { history, message } = req.body;
+
     if (!message) {
       return res.status(400).json({ error: "No message provided" });
     }
 
-    // Add user message
+    // Start history if empty
+    const chatHistory = history || [];
+
+    // Add new user message
     chatHistory.push({ role: "user", parts: [{ text: message }] });
 
-    // Call Gemini with full history
+    // Send full history to Gemini
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash-001",
       contents: chatHistory,
     });
 
-    // Extract reply safely
-    const reply =
-      response.text ||
-      response.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No reply from Gemini";
+    const reply = response.text;
 
-    // Save AI reply
+    // Add AI reply to history
     chatHistory.push({ role: "model", parts: [{ text: reply }] });
 
-    // Send back
     res.json({ reply, history: chatHistory });
   } catch (err) {
-    console.error("Error:", err);
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get("/", (req, res) => {
-  res.json({ message: "Chat API running 🚀" });
-});
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Chat API running on port ${PORT}`));
