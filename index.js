@@ -37,9 +37,11 @@ app.post("/chat", async (req, res) => {
 			const ai = new GoogleGenAI({ apiKey: ApiKey[i] });
 			
 			const response = await ai.models.generateContent({
-				model: "gemini-2.0-flash-001",
+				model: "gemini-2.5-flash",
 				contents: chatHistory,
-				systemInstruction: system ? { role: "system", parts: [{ text: system }] } : undefined,
+				config: {
+					systemInstruction: system || "",
+				},
 			});
 			
 			reply = response.text;
